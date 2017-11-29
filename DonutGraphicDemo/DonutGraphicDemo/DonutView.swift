@@ -58,6 +58,8 @@ class DonutView: UIView {
 		super.draw(rect)
 		
 		buildFakeSliceLayers()
+		
+//		buildFakeInnerSliceLayers()
 	}
 	
 	fileprivate func buildFakeSliceLayers(){
@@ -76,10 +78,37 @@ class DonutView: UIView {
 			
 			let layer = CAShapeLayer()
 			layer.frame = bounds
+			layer.lineWidth = 10
+			layer.strokeColor = backgroundColor?.cgColor
+			
+			slayer.tintColor = slice.tintColor
+			slayer.path = slayer.sliceCGPath
+			self.layer.addSublayer(slayer)
+			
+			layers.append(slayer)
+		}
+	}
+	
+	fileprivate func buildFakeInnerSliceLayers(){
+		let outerRadius = min(bounds.width, bounds.height) / 2 - 20
+		var endAngle: CGFloat = 0
+		
+		for (i, slice) in slices.enumerated() {
+			let slayer = DonutSliceLayer()
+			slayer.frame = bounds
+			slayer.startAngle = endAngle
+			slayer.endAngle = i == 0 ? angle(of: slice) : angle(of: slice) + endAngle
+			slayer.innerRadius = outerRadius - thickness
+			slayer.outerRadius = outerRadius
+			
+			endAngle = slayer.endAngle
+			
+			let layer = CAShapeLayer()
+			layer.frame = bounds
 			layer.lineCap = kCALineCapRound
 			layer.lineJoin = kCALineJoinRound
-			layer.lineWidth = 10
-			layer.strokeColor = UIColor.white.cgColor
+			layer.lineWidth = 5
+			layer.strokeColor = slice.tintColor.cgColor
 			layer.fillColor = slice.tintColor.cgColor
 			layer.path = slayer.sliceCGPath
 			self.layer.addSublayer(layer)

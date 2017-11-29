@@ -18,7 +18,7 @@ class ViewController: UIViewController {
         donutView.slices = [
 			DonutView.SliceData(value: 0.3, tintColor: .red, text: nil),
 			DonutView.SliceData(value: 0.5, tintColor: .green, text: nil),
-			DonutView.SliceData(value: 0.2, tintColor: .black, text: nil)
+			DonutView.SliceData(value: 0.2, tintColor: .blue, text: nil)
         ]
     }
 
