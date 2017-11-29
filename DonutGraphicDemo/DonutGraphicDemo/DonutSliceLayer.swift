@@ -46,6 +46,7 @@ class DonutSliceLayer: CAShapeLayer {
     
     var roundRadius: CGFloat = 10{
         didSet{
+			roundRadius = roundRadius > 10 ? 10 : roundRadius
             setNeedsDisplay()
         }
     }
@@ -72,16 +73,41 @@ class DonutSliceLayer: CAShapeLayer {
     
     var sliceCGPath: CGPath{
         fillColor = tintColor.cgColor
-        strokeColor = tintColor.cgColor
-        lineWidth = roundRadius
+		strokeColor = tintColor.cgColor
+		lineWidth = roundRadius
         lineJoin = kCALineJoinRound
         
         let path = CGMutablePath()
         let center = CGPoint(x: bounds.width / 2, y: bounds.height / 2)
-        path.addRelativeArc(center: center, radius: outerRadius - roundRadius, startAngle: startAngle, delta: endAngle - startAngle)
-        path.addRelativeArc(center: center, radius: innerRadius - roundRadius, startAngle: endAngle - offsetAngle, delta: startAngle - endAngle + offsetAngle)
+		
+        path.addRelativeArc(center: center, radius: outerRadius - roundRadius, startAngle: startAngle, delta: endAngle - startAngle )
+        path.addRelativeArc(center: center, radius: innerRadius - roundRadius, startAngle: endAngle, delta: startAngle - endAngle)
         path.closeSubpath()
         return path
     }
+	
+	var sliceNewCGPath: CGPath{
+		fillColor = tintColor.cgColor
+		strokeColor = tintColor.cgColor
+		lineWidth = roundRadius
+		lineJoin = kCALineJoinRound
+		
+		let halfOfAngle = (endAngle - startAngle) / 2
+		let innerRadiusOffset = lineWidth / sin(halfOfAngle)
+
+		let path = CGMutablePath()
+		let center = CGPoint(x: bounds.width / 2, y: bounds.height / 2)
+		let bPath = UIBezierPath(arcCenter: center, radius: innerRadiusOffset, startAngle: startAngle, endAngle: startAngle + halfOfAngle, clockwise: true)
+		
+		let newCenter = bPath.currentPoint
+		
+		let innerR = outerRadius - cos(halfOfAngle) * innerRadiusOffset - roundRadius * 2
+		
+		path.addRelativeArc(center: newCenter, radius: innerR, startAngle: startAngle, delta: endAngle - startAngle)
+		path.addRelativeArc(center: newCenter, radius: innerR - (outerRadius - innerRadius), startAngle: endAngle, delta: startAngle - endAngle)
+		path.closeSubpath()
+		
+		return path
+	}
 }
 

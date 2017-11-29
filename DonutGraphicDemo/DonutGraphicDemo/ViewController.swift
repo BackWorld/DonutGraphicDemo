@@ -14,10 +14,11 @@ class ViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        donutView.cornerRadius = 10
+        donutView.cornerRadius = 30
         donutView.slices = [
-            DonutView.SliceData(startAngle: 0, endAngle: .pi / 4, tint: .red, text: nil),
-            DonutView.SliceData(startAngle: .pi / 4 + donutView.cornerRadius / 100, endAngle: .pi, tint: .green, text: nil),
+			DonutView.SliceData(value: 0.3, tintColor: .red, text: nil),
+			DonutView.SliceData(value: 0.5, tintColor: .green, text: nil),
+			DonutView.SliceData(value: 0.2, tintColor: .black, text: nil)
         ]
     }
 
